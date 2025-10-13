@@ -4,11 +4,13 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Prisma, User as UserModel } from '@prisma/client';
 import { UserService } from './user.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 //CRUD
 @Controller('user')
@@ -22,12 +24,13 @@ export class UserController {
     return this.userService.createUser(userData);
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id') //read (ler um usuário por id)
   async getUser(@Param('id') id: string): Promise<UserModel | null> {
     return this.userService.user({ id: Number(id) }); //id na url é sempre lido como string, por isso a conversão
   } //chama o método User (em UserService) para encontrar o user pelo id
 
-  @Put(':id')
+  @Patch(':id')
   async updateUser(
     @Body() userData: Prisma.UserUpdateInput, //os dados a ser alteraros
     @Param('id') id: string, //o id para saber o usuário

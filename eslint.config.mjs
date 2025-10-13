@@ -28,7 +28,12 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn'
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+      // Desliga o erro "Unsafe assignment of an `any` value."
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      // Desliga o erro ao acessar propriedades de um 'any' (ex: request.userId)
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+
     },
   },
 );

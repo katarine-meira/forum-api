@@ -19,7 +19,8 @@ export class AuthService {
 
   //email e password
   async signin(
-    params: Prisma.UserCreateInput): Promise<{access_token: string}> {
+    params: Prisma.UserCreateInput,
+  ): Promise<{ access_token: string }> {
     //retorna um tipo omit para omitir o password do user
     const user = await this.userService.user({ email: params.email }); //usa o metodo user de UserService para localizar um user por meio do email
     if (!user) throw new NotFoundException('User not found');
@@ -28,6 +29,6 @@ export class AuthService {
 
     const payload = { sub: user.id }; //esse sub é padrão do jwt
     //retorna o acssestoken em formato de objeto passando o id (dento de payload)
-    return {access_token: await this.jwtService.signAsync(payload)}; 
+    return { access_token: await this.jwtService.signAsync(payload) };
   }
 }
