@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -22,7 +23,7 @@ export class QuestionsController {
   @UseGuards(AuthGuard) //tem que estar logado
   //ta pegando o userId da request do quardian
   create(@Body() createQuestionDto: CreateQuestionDto, @Request() req: any) {
-    return this.questionsService.create(createQuestionDto, Number(req.sub));
+    return this.questionsService.create(createQuestionDto, req);
   }
 
   @Get()
@@ -33,22 +34,22 @@ export class QuestionsController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  findOne(@Param('id') id: string) {
-    return this.questionsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.questionsService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard)
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateQuestionDto: UpdateQuestionDto,
   ) {
-    return this.questionsService.update(+id, updateQuestionDto);
+    return this.questionsService.update(id, updateQuestionDto);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  remove(@Param('id') id: string) {
-    return this.questionsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.questionsService.remove(id);
   }
 }

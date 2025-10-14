@@ -10,11 +10,20 @@ export class UserService {
 
   //pega um usuário(read)
   async user(
+    //pode retornar um user sem o password
     userWhereUniqueInput: Prisma.UserWhereUniqueInput,
-  ): Promise<User | null> {
+  ): Promise<Omit<User, 'password'> | null> {
     // método do prisma para buscar um único registro
     return this.prisma.user.findUnique({
       where: userWhereUniqueInput, //retorna um user(se encontrado) ou null
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        password: false, //tirando o password da exibição do user (pelo campo ser obrigatorio, foi usado o omit)
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
