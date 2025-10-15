@@ -33,6 +33,8 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': 'off',
       // Desliga o erro ao acessar propriedades de um 'any' (ex: request.userId)
       '@typescript-eslint/no-unsafe-member-access': 'off',
+      // reslve o erro de tipagem do dto e class-validation
+      '@typescript-eslint/no-unsafe-call': 'off',
 
     },
   },

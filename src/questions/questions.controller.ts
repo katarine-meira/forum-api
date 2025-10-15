@@ -9,6 +9,7 @@ import {
   UseGuards,
   Request,
   ParseIntPipe,
+  ValidationPipe,
 } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
@@ -22,7 +23,10 @@ export class QuestionsController {
   @Post()
   @UseGuards(AuthGuard) //tem que estar logado
   //ta pegando o userId da request do quardian
-  create(@Body() createQuestionDto: CreateQuestionDto, @Request() req: any) {
+  create(
+    @Body(new ValidationPipe()) createQuestionDto: CreateQuestionDto,
+    @Request() req: any,
+  ) {
     return this.questionsService.create(createQuestionDto, req);
   }
 
@@ -42,7 +46,7 @@ export class QuestionsController {
   @UseGuards(AuthGuard)
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateQuestionDto: UpdateQuestionDto,
+    @Body(new ValidationPipe()) updateQuestionDto: UpdateQuestionDto,
   ) {
     return this.questionsService.update(id, updateQuestionDto);
   }
