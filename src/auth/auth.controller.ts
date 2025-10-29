@@ -5,19 +5,27 @@ import {
   HttpStatus,
   Inject,
   Post,
+  ValidationPipe,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { AuthService } from './auth.service';
+import { SignInDto } from './dto/signin.dto';
+import { SignUpDto } from './dto/signup.dto';
 
 @Controller('auth')
 export class AuthController {
   @Inject()
   private readonly authService: AuthService;
 
+  @Post('signup')
+  @HttpCode(HttpStatus.CREATED)
+  signup(@Body(new ValidationPipe()) dto: SignUpDto) {
+    return this.authService.signup(dto);
+  }
+
   //singin é sempre um post(ceate)
   @Post('signin')
   @HttpCode(HttpStatus.OK) //constructor que muda o retorno (mudei para o 200)
-  singin(@Body() body: Prisma.UserCreateInput) {
-    return this.authService.signin(body); //retorna o user sem a senha
+  signin(@Body(new ValidationPipe()) dto: SignInDto) {
+    return this.authService.signin(dto);
   }
 }
