@@ -22,7 +22,17 @@ export class QuestionsService {
     //retorna tudo de questions + o array de answers
     return await this.prisma.questions.findMany({
       include: {
-        answers: true,
+        answers: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
         user: {
           //da parta selecionar apeas as informações que eu quero passar (em Prisma relation-queries tem mais)
           select: {

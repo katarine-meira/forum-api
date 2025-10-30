@@ -27,21 +27,36 @@ export class AnswersService {
   }
 
   findAll() {
-    return this.prisma.questions.findMany();
+    return this.prisma.answers.findMany({
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
   }
 
   findOne(id: number) {
-    return this.prisma.questions.findUnique({ where: { id } });
+    return this.prisma.answers.findUnique({
+      where: { id },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        question: { select: { id: true, title: true } },
+      },
+    });
   }
 
   update(id: number, updateAnswerDto: UpdateAnswerDto) {
-    return this.prisma.questions.update({
+    return this.prisma.answers.update({
       where: { id },
       data: updateAnswerDto,
     });
   }
 
   remove(id: number) {
-    return this.prisma.questions.delete({ where: { id } });
+    return this.prisma.answers.delete({ where: { id } });
   }
 }
