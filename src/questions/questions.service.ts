@@ -13,7 +13,10 @@ export class QuestionsService {
   async create(createQuestionDto: CreateQuestionDto, req: any) {
     return await this.prisma.questions.create({
       //o prisma exige um title, body e Id
-      data: { ...createQuestionDto, userId: req.sub.sub }, //retorna tudo do create-quetion.dto + o id (que ja temos)
+      data: { ...createQuestionDto, userId: req.sub.sub },
+      include: {
+        user: { select: { id: true, name: true } },
+      }, //retorna tudo do create-quetion.dto + o id (que ja temos)
     });
   }
 

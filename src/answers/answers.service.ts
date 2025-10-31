@@ -23,6 +23,10 @@ export class AnswersService {
     };
     return this.prisma.answers.create({
       data: newAnswer,
+      include: {
+        user: { select: { id: true, name: true } },
+        question: { select: { id: true } },
+      },
     });
   }
 
