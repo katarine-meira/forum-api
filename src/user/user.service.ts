@@ -59,4 +59,11 @@ export class UserService {
       where,
     });
   }
+
+  //buscar o user com o password (pra validação de senha)
+  async findByIdWithPassword(id: number) {
+    return this.prisma.user.findUnique({
+      where: { id },
+    });
+  }
 }
