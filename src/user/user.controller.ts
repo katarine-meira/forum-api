@@ -33,40 +33,11 @@ export class UserController {
     return this.userService.createUser(CreateUserDto);
   }
 
-  @UseGuards(AuthGuard)
-  @Get(':id') //read (ler um usuário por id)
-  async getUser(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<Omit<UserModel, 'password'> | null> {
-    return this.userService.user({ id }); //id na url é sempre lido como string, por isso a conversão
-  } //chama o método User (em UserService) para encontrar o user pelo id
-
-  //esse update é protegido para que apenas users internos altere qualquer usuário
-  @Patch(':id')
-  @UseGuards(AuthGuard)
-  async updateUser(
-    @Body(new ValidationPipe()) userData: UpdateUserDto, //os dados a ser alterados
-    @Param('id', ParseIntPipe) id: number, //o id para saber o usuário
-  ): Promise<UserModel> {
-    return this.userService.updateUser({
-      //chama o método updateUser passando um objeto:
-      where: { id }, //para identificar o user
-      data: userData, //os novos dados a serem aplicados
-    });
-  }
-
-  @Delete(':id')
-  @UseGuards(AuthGuard)
-  async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<UserModel> {
-    //chama o método deleteUser do userService passando o objeto where para identificar o registro
-    return this.userService.deleteUser({ id });
-  }
-
   // GET /user/me — retorna dados do usuário logado
   @UseGuards(AuthGuard)
   @Get('me')
   async getProfile(@Req() req) {
-    const userId = req.user.sub;
+    const userId = req.sub.sub;
     return this.userService.user({ id: userId });
   }
 
@@ -75,7 +46,18 @@ export class UserController {
   @Put('me')
   async updateProfile(
     @Req() req,
-    @Body() body: { name?: string; email?: string },
+    @Body()
+    body: {
+      name?: string;
+      email?: string;
+      bio?: string;
+      github?: string;
+      linkedin?: string;
+      skills?: string;
+      semester?: string;
+      avatarUrl?: string;
+      bannerUrl?: string;
+    },
   ) {
     const userId = req.user.sub;
     return this.userService.updateUser({
@@ -115,5 +97,34 @@ export class UserController {
     });
 
     return { message: 'Senha alterada com sucesso!' };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':id') //read (ler um usuário por id)
+  async getUser(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Omit<UserModel, 'password'> | null> {
+    return this.userService.user({ id }); //id na url é sempre lido como string, por isso a conversão
+  } //chama o método User (em UserService) para encontrar o user pelo id
+
+  //esse update é protegido para que apenas users internos altere qualquer usuário
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  async updateUser(
+    @Body(new ValidationPipe()) userData: UpdateUserDto, //os dados a ser alterados
+    @Param('id', ParseIntPipe) id: number, //o id para saber o usuário
+  ): Promise<UserModel> {
+    return this.userService.updateUser({
+      //chama o método updateUser passando um objeto:
+      where: { id }, //para identificar o user
+      data: userData, //os novos dados a serem aplicados
+    });
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<UserModel> {
+    //chama o método deleteUser do userService passando o objeto where para identificar o registro
+    return this.userService.deleteUser({ id });
   }
 }

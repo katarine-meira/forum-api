@@ -18,6 +18,13 @@ model User {
   email      String    @unique //unica
   name       String? //opcional
   password   String
+  bio        String?
+  github     String?
+  linkedin   String?
+  skills     String?
+  semester   String?
+  avatarUrl  String?
+  bannerUrl  String?
   createdAt  DateTime  @default(now()) //padrão de quando foi criado (data atual)
   updatedAt  DateTime  @updatedAt //padrão de quando foi atualizado  (data atual atuaização)
   questions   Questions[]  //várias perguntas

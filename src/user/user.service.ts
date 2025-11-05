@@ -20,6 +20,13 @@ export class UserService {
         id: true,
         email: true,
         name: true,
+        bio: true,
+        github: true,
+        linkedin: true,
+        skills: true,
+        semester: true,
+        avatarUrl: true,
+        bannerUrl: true,
         password: false, //tirando o password da exibição do user (pelo campo ser obrigatorio, foi usado o omit)
         createdAt: true,
         updatedAt: true,
