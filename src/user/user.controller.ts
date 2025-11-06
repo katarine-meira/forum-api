@@ -59,7 +59,7 @@ export class UserController {
       bannerUrl?: string;
     },
   ) {
-    const userId = req.user.sub;
+    const userId = req.sub.sub;
     return this.userService.updateUser({
       where: { id: userId }, //para identificar o user
       data: body, //os novos dados a serem aplicados
@@ -72,7 +72,7 @@ export class UserController {
     @Req() req,
     @Body() body: { currentPassword: string; newPassword: string },
   ) {
-    const userId = req.user.sub;
+    const userId = req.sub.sub;
     // Busca o user com a senha
     const user = await this.userService.findByIdWithPassword(userId);
     if (!user) {
