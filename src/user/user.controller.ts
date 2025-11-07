@@ -11,7 +11,9 @@ import {
   Post,
   Put,
   Req,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -20,6 +22,9 @@ import { UserService } from './user.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 //CRUD
 @Controller('user')
@@ -44,8 +49,32 @@ export class UserController {
   // PUT /user/me — atualiza nome/email (usada apenas por usuário logado)
   @UseGuards(AuthGuard)
   @Put('me')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'avatar', maxCount: 1 },
+        { name: 'banner', maxCount: 1 },
+      ],
+      {
+        storage: diskStorage({
+          destination: './uploads/users', // pasta onde serão salvos
+          filename: (req, file, callback) => {
+            const uniqueSuffix =
+              Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const ext = extname(file.originalname);
+            callback(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+          },
+        }),
+      },
+    ),
+  )
   async updateProfile(
     @Req() req,
+    @UploadedFiles()
+    files: {
+      avatar?: Express.Multer.File[];
+      banner?: Express.Multer.File[];
+    },
     @Body()
     body: {
       name?: string;
@@ -55,14 +84,23 @@ export class UserController {
       linkedin?: string;
       skills?: string;
       semester?: string;
-      avatarUrl?: string;
-      bannerUrl?: string;
     },
   ) {
     const userId = req.sub.sub;
+
+    const avatarFile = files?.avatar?.[0];
+    const bannerFile = files?.banner?.[0];
+
+    // adiciona URLs se houver upload
+    const dataToUpdate = {
+      ...body,
+      ...(avatarFile && { avatarUrl: `/uploads/users/${avatarFile.filename}` }),
+      ...(bannerFile && { bannerUrl: `/uploads/users/${bannerFile.filename}` }),
+    };
+
     return this.userService.updateUser({
-      where: { id: userId }, //para identificar o user
-      data: body, //os novos dados a serem aplicados
+      where: { id: userId },
+      data: dataToUpdate,
     });
   }
 
