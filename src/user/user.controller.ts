@@ -24,7 +24,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import path, { extname } from 'path';
+import fs from 'fs';
 
 //CRUD
 @Controller('user')
@@ -88,8 +89,33 @@ export class UserController {
   ) {
     const userId = req.sub.sub;
 
+    const user = await this.userService.user({ id: userId });
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
     const avatarFile = files?.avatar?.[0];
     const bannerFile = files?.banner?.[0];
+
+    // Função auxiliar para deletar arquivos antigos
+    const deleteIfExists = (filePath: string) => {
+      try {
+        const absolutePath = path.join(process.cwd(), filePath);
+        if (fs.existsSync(absolutePath)) {
+          fs.unlinkSync(absolutePath);
+        }
+      } catch (err) {
+        console.error('Erro ao excluir arquivo antigo:', err);
+      }
+    };
+
+    // Se o usuário enviou um novo avatar, remove o anterior
+    if (avatarFile && user.avatarUrl) {
+      deleteIfExists(user.avatarUrl);
+    }
+
+    // Se o usuário enviou um novo banner, remove o anterior
+    if (bannerFile && user.bannerUrl) {
+      deleteIfExists(user.bannerUrl);
+    }
 
     // adiciona URLs se houver upload
     const dataToUpdate = {
