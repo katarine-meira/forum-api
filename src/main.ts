@@ -10,7 +10,9 @@ async function bootstrap() {
   app.enableCors();
 
   // Torna a pasta uploads pública
-  app.useStaticAssets(join(__dirname, '..', 'uploads'));
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads',
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }
