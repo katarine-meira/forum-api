@@ -32,6 +32,7 @@ export class QuestionsService {
                 id: true,
                 name: true,
                 email: true,
+                avatarUrl: true,
               },
             },
           },
@@ -41,8 +42,12 @@ export class QuestionsService {
           select: {
             name: true,
             email: true,
+            avatarUrl: true,
           },
         },
+      },
+      orderBy: {
+        createdAt: 'desc', //ordena da mais recente para a mais antiga
       },
     });
   }
@@ -58,6 +63,7 @@ export class QuestionsService {
           select: {
             name: true,
             email: true,
+            avatarUrl: true,
           },
         },
       },
