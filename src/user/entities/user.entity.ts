@@ -1,4 +1,4 @@
-import { User as PrismaUser } from '@prisma/client';
+import { $Enums, User as PrismaUser } from '@prisma/client';
 
 export class User implements PrismaUser {
   id: number;
@@ -14,4 +14,5 @@ export class User implements PrismaUser {
   password: string;
   createdAt: Date;
   updatedAt: Date;
+  role: $Enums.Role;
 }

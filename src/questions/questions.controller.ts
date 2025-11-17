@@ -15,6 +15,8 @@ import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from '@prisma/client';
 
 @Controller('questions')
 export class QuestionsController {
@@ -44,6 +46,7 @@ export class QuestionsController {
 
   @Patch(':id')
   @UseGuards(AuthGuard)
+  @Roles(Role.STUDENT, Role.MEMBER, Role.LEADER)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body(new ValidationPipe()) updateQuestionDto: UpdateQuestionDto,
@@ -53,6 +56,7 @@ export class QuestionsController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
+  @Roles(Role.STUDENT, Role.MEMBER, Role.LEADER)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.questionsService.remove(id);
   }

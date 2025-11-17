@@ -35,10 +35,11 @@ export class AuthService {
         name: dto.name,
         email: dto.email,
         password: hashedPassword,
+        role: dto.role ?? 'STUDENT',
       },
     });
 
-    const payload = { sub: user.id };
+    const payload = { sub: user.id, role: user.role };
     return { access_token: await this.jwtService.signAsync(payload) };
   }
 
@@ -52,7 +53,7 @@ export class AuthService {
     const passwordMatch = await bcrypt.compare(dto.password, user.password); //compara a senha digitada com o hash no sistema, retorna um true ou false
     if (!passwordMatch) throw new UnauthorizedException('Invalide credentials');
 
-    const payload = { sub: user.id }; //esse sub é padrão do jwt
+    const payload = { sub: user.id, role: user.role }; //esse sub é padrão do jwt
     //retorna o acssestoken em formato de objeto passando o id (dento de payload)
     return { access_token: await this.jwtService.signAsync(payload) };
   }

@@ -30,6 +30,7 @@ export class UserService {
         password: false, //tirando o password da exibição do user (pelo campo ser obrigatorio, foi usado o omit)
         createdAt: true,
         updatedAt: true,
+        role: true,
       },
     });
   }

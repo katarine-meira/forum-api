@@ -13,8 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  LEADER
+  MEMBER
+  STUDENT
+}
+
 model User {
-  id         Int    @default(autoincrement()) @id
+  id         Int       @default(autoincrement()) @id
   email      String    @unique //unica
   name       String? //opcional
   password   String
@@ -27,8 +33,9 @@ model User {
   bannerUrl  String?
   createdAt  DateTime  @default(now()) //padrão de quando foi criado (data atual)
   updatedAt  DateTime  @updatedAt //padrão de quando foi atualizado  (data atual atuaização)
-  questions   Questions[]  //várias perguntas
+  questions  Questions[]  //várias perguntas
   answers    Answers[] //várias respostas
+  role       Role      @default(STUDENT)
 }
 
 model Questions {
@@ -51,5 +58,5 @@ model Answers {
   userId     Int  //vai existir na tabela como chave estrangeira de user
   questionId Int  //vai existir na tabela como chave estrangeira de question
   user       User      @relation(fields: [userId], references: [id])
-  question   Questions @relation(fields: [questionId], references: [id])
+  question   Questions @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
